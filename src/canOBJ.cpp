@@ -17,7 +17,7 @@ CanOBJ::CanOBJ() {
 
 void CanOBJ::setup() {
   pinMode(LED_BUILTIN, OUTPUT);
-  Serial.begin(115200);
+//   Serial.begin(115200);
   if (canInitialize(CAN_250KBPS) == CAN_OK) {
     Serial.print("CAN Init OK.\n\r\n\r");
   } else {
