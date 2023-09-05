@@ -45,6 +45,7 @@ bool ReadSerialMonitorString(void)
 
 // put function declarations here:
 int myFunction(int, int);
+float mapFloat(float x, float in_min, float in_max, float out_min, float out_max) ;
 void looper();
 
  
@@ -78,6 +79,9 @@ void loop() {
   looper();
 }
 
+
+
+// put function definitions here:
 void looper() 
 {
   // Declarations
@@ -132,6 +136,40 @@ void looper()
         
   }// end if
   
+int sensorValue = analogRead(A0);
+float floatValue = mapFloat(sensorValue, 0, 1024, 0.0, 20.0);
+
+//weird 4 bytes 
+  // byte floatBytes[4];
+  // memcpy(floatBytes, &floatValue, 4);
+  // Serial.print("0x");
+  // Serial.print(floatBytes[0], HEX);
+  // Serial.print(" 0x");
+  // Serial.print(floatBytes[1], HEX);
+  // Serial.print(" 0x");
+  // Serial.print(floatBytes[2], HEX);
+  // Serial.print(" 0x");
+  // Serial.println(floatBytes[3], HEX);
+
+  // Convert the float to a fixed-point representation using 8 bits for the fractional part
+  int fixedPointValue = (int)(floatValue * 256);
+
+  // Extract the two bytes
+  byte byte1 = (fixedPointValue >> 8) & 0xFF;
+  byte byte2 = fixedPointValue & 0xFF;
+
+  // Transmit the two bytes in hexadecimal format
+  // Serial.print("0x");
+  // Serial.print(byte1, HEX);
+  // Serial.print(" 0x");
+  // Serial.println(byte2, HEX);
+
+  msgRequest_0[7] = byte1;
+  msgRequest_0[6] = byte2;
+ j1939Transmit(PGN_RequestMessage, 6, NODEPV780_Request, NODE_Response, msgRequest_0, 8);
+
+
+ //  Serial.println(sensorValue);
   // Check for user input per serial monitor
   // Send request message with user input
   if(ReadSerialMonitorString() == true){
@@ -143,8 +181,10 @@ void looper()
 
 
 
- 
-// put function definitions here:
+ float mapFloat(float x, float in_min, float in_max, float out_min, float out_max) {
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
 int myFunction(int x, int y) {
   return x + y;
 }
