@@ -1,8 +1,10 @@
 #include "CanSender.h"
 #include "canSerialMsgParser.h"
-#include "HWInterface.h"
+//#include "HWInterface.h"
 #include "DigitalInterface.h"
-HWInterface hwInterface;
+#include "AnalogueInterface.h"
+//HWInterface hwInterface;
+AnalogueInterface analogueInterface;
 DigitalInterface digitalInterface; 
 CanSender canSender;
 CanSerialMsgParser canSerialMsgParser;
@@ -10,7 +12,8 @@ CanSerialMsgParser canSerialMsgParser;
 void setup() {
   Serial.begin(115200);
   digitalInterface.setup();
-  hwInterface.setup();
+  analogueInterface.begin();
+  // hwInterface.setup();
   canSender.setup();
 }
 
@@ -49,27 +52,43 @@ void loopSendMessage(){
 
   
 }
-void loopSendPots(){
+// void loopSendPots(){
  
- unsigned char* message = hwInterface.getMessage();
- canSender.sendMessage(6, 0x18FF02, 0x09, message);
-    for (int i = 0; i < 8; i++) {
-      Serial.print(message[i], HEX);
-      Serial.print(" ");
-    }
-    Serial.println();
+//  unsigned char* message = hwInterface.getMessage();
+//  canSender.sendMessage(6, 0x18FF02, 0x09, message);
+//     for (int i = 0; i < 8; i++) {
+//       Serial.print(message[i], HEX);
+//       Serial.print(" ");
+//     }
+//     Serial.println();
 
+// }
+void looppots() {
+ analogueInterface.run();
+
+  int joystickX = analogueInterface.getJoystickX();
+  int joystickY = analogueInterface.getJoystickY();
+  int sliderL = analogueInterface.getSliderL();
+  int sliderR = analogueInterface.getSliderR();
+
+  Serial.print("Joystick X: "); Serial.println(joystickX);
+  Serial.print("Joystick Y: "); Serial.println(joystickY);
+  Serial.print("Slider L: "); Serial.println(sliderL);
+  Serial.print("Slider R: "); Serial.println(sliderR);
+
+
+  delay(500);
 }
-
 void loop() {
-   digitalInterface.run();
-   if(digitalInterface.getLEDState()==HIGH){
-    loopSendPots();
-   }
-   else{
-    if (Serial.available()) {
-      loopSendMessage();
+  //  digitalInterface.run();
+looppots();
+  //  if(digitalInterface.getLEDState()==HIGH){
+  //   loopSendPots();
+  //  }
+  //  else{
+  //   if (Serial.available()) {
+  //     loopSendMessage();
 
-      }
-   }
+  //     }
+  //  }
 }
