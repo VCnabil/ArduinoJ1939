@@ -1,20 +1,24 @@
 #include "CanSender.h"
 #include "canSerialMsgParser.h"
-//#include "HWInterface.h"
 #include "DigitalInterface.h"
 #include "AnalogueInterface.h"
-//HWInterface hwInterface;
+#include "ValueConvertor.h"
+
 AnalogueInterface analogueInterface;
+ValueConvertor valueConvertor;
 DigitalInterface digitalInterface; 
 CanSender canSender;
 CanSerialMsgParser canSerialMsgParser;
+
+unsigned char DATA[8];
+long PGN_=0xFF02;
 
 void setup() {
   Serial.begin(115200);
   digitalInterface.setup();
   analogueInterface.begin();
-  // hwInterface.setup();
   canSender.setup();
+   
 }
 
 
@@ -52,17 +56,7 @@ void loopSendMessage(){
 
   
 }
-// void loopSendPots(){
- 
-//  unsigned char* message = hwInterface.getMessage();
-//  canSender.sendMessage(6, 0x18FF02, 0x09, message);
-//     for (int i = 0; i < 8; i++) {
-//       Serial.print(message[i], HEX);
-//       Serial.print(" ");
-//     }
-//     Serial.println();
 
-// }
 void looppots() {
  analogueInterface.run();
 
@@ -79,9 +73,44 @@ void looppots() {
 
   delay(500);
 }
+void loopDips(){
+  digitalInterface.run();
+  for(int x=0; x<6; x++){
+     Serial.print(digitalInterface.getDIPState(x));
+      Serial.print(" ");
+  }
+   Serial.println("");
+
+}
+
 void loop() {
+  analogueInterface.run();
+  int sliderL = analogueInterface.getSliderL();
+  float floatValueMAPPED_sliderL =valueConvertor.mapFloat(sliderL,0,1023,0.0,19.6);
+  valueConvertor.convertToBytes(floatValueMAPPED_sliderL);
+
+  Serial.print(sliderL);
+  Serial.print(" ");
+
+  Serial.print(floatValueMAPPED_sliderL);
+  Serial.print(" ");
+  Serial.print(valueConvertor.getFirstByte(),HEX);
+  Serial.print(" ");
+  Serial.print(valueConvertor.getSecondByte(),HEX);
+  Serial.println("");
+
+
+ memset(DATA, 0, sizeof(DATA));
+DATA[7]=valueConvertor.getFirstByte();
+DATA[6]=valueConvertor.getSecondByte();
+DATA[5]=valueConvertor.getFirstByte();
+DATA[4]=valueConvertor.getSecondByte();
+j1939Transmit(PGN_, 0x06, 0x09, 0x30, DATA, 8);
+
+delay(100);
   //  digitalInterface.run();
-looppots();
+// looppots();
+//loopDips();
   //  if(digitalInterface.getLEDState()==HIGH){
   //   loopSendPots();
   //  }

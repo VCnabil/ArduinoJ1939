@@ -68,7 +68,7 @@ void DigitalInterface::run() {
 
     // Update DIP switch states
   for (int i = 0; i < 6; ++i) {
-    DIP_Pin_states[i] = digitalRead(DIP_PINS[i]);
+    DIP_Pin_states[i] = !digitalRead(DIP_PINS[i]);
   }
 }
 
