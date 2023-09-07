@@ -122,10 +122,14 @@ void loop() {
   joystick.updateValues(JoyX, JoyY);
   float angle = joystick.getAngle();
 
-
+byte* bytes = valueConvertor.floatToTwoByteArray(359.98f); // 35998 is 8C9E
+byte high = bytes[0];
+byte low = bytes[1];
   //Serial.print(cartesianX);
   Serial.print(" ");
-  Serial.print(angle);
+  Serial.print(low,HEX); //9E  for the input   35998 is 8C9E
+  Serial.print(" ");
+  Serial.print(high,HEX); //8C   for the input   35998 is 8C9E
   Serial.print(" ");
   Serial.println("");
 

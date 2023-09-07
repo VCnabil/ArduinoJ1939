@@ -152,3 +152,22 @@ int ValueConvertor::getAngle_INT(int arg_cartesianX, int arg_cartesianY){
    }
 float ValueConvertor::getAngle_FLOAT(int arg_cartesianX, int arg_cartesianY){return VECTORtoAUNGLE_NORTH(arg_cartesianX,arg_cartesianY);}
 
+// Function to convert float to two bytes and return as byte array
+byte* ValueConvertor::floatToTwoByteArray(float value) {
+  static byte result[2];  // Static so it persists outside the function
+  uint16_t intVal = (uint16_t)(value * 100);  // Convert float to integer
+
+  result[0] = (intVal >> 8) & 0xFF;  // High byte
+  result[1] = intVal & 0xFF;         // Low byte
+
+  return result;
+}
+
+
+/*
+usage
+ValueConvertor valueConvertor;
+byte* bytes = valueConvertor.floatToTwoByteArray(359.98f);
+byte high = bytes[0];
+byte low = bytes[1];
+*/
