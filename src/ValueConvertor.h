@@ -11,6 +11,8 @@ class ValueConvertor {
     float mapFloat(float x, float in_min, float in_max, float out_min, float out_max);
     byte getFirstByte();
     byte getSecondByte();
+    int getAngle_INT(int arg_cartesianX, int arg_cartesianY);
+    float getAngle_FLOAT(int arg_cartesianX, int arg_cartesianY);
 
 
   private:
