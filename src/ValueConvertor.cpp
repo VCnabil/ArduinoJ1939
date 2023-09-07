@@ -7,6 +7,12 @@ ValueConvertor::ValueConvertor() {
 
 #pragma region Angles
 
+
+//watch out this one returns
+// 0-90 when swiping around CCW from east north 
+// -89 - -0 CCW swiping north to west
+// 0 - 90  swipping CCW east to south 
+// -90 - -0  swipping CCW  south  to` east
 int radtodeg(float rad) { return rad * (180 / M_PI); }
 
 
@@ -30,13 +36,7 @@ int vectorangle_EAST(int x, int y) {
 }
 int vectorangle_NORTH(int x, int y) {
 
-  // if (x == 0) // special cases
-  //     return (y > 0) ? 0
-  //     : (y == 0) ? 0
-  //     : 90;
-  // else if (y == 0) // special cases
-  //     return (x >= 0) ? 180
-  //     : 270;
+ 
 
 int ret = radtodeg(atanf((float)y / x));
 
@@ -70,12 +70,14 @@ return ret;
  
 }
 
-
+//watch out this one returns
+// 0-180 when swiping around CCW from east north west
+// -180 - -0 swipping CW east south west
 float RADtoDEG(float rad) {
     return rad * (180.0 / 3.141592653589793238463);
 }
 
-float VECTORtoAUNGLE(int x, int y) {
+float VECTORtoAUNGLE_EAST(int x, int y) {
     if (x == 0) // special cases
         return (y > 0) ? 90.0
         : (y == 0) ? 0.0
@@ -88,11 +90,29 @@ float VECTORtoAUNGLE(int x, int y) {
     if (ret < 0) {
         ret = 360 + ret;
     }
-        // Adjust the angle so that North is 0 degrees
-    ret -= 90.0;
-    if (ret < 0) {
-        ret += 360.0;
-    }
+ 
+    return ret;
+}
+
+float VECTORtoAUNGLE_NORTH(int x, int y) {
+  float ret = RADtoDEG(atan2((float)y, (float)x));
+  if (x == 0 && y == 0) {return 0.0f;}
+  // Special cases for cardinal directions
+  if (x == 0 && y > 0) ret= 0.0f;
+  else
+  if (x == 0 && y < 0) ret= 180.0f;
+    else
+  if (x > 0 && y == 0) ret= 270.0f;
+    else
+  if (x < 0 && y == 0) ret= 90.0f;
+    else
+  if (x > 0 && y > 0) ret = 270.0f + ret; // quadrant  1
+    else
+  if (x < 0 && y > 0) ret = ret-90.0f; // quadrant  2
+    else
+  if (x < 0 && y < 0) ret =  ret+270.0f ; // quadrant  3           
+    else
+  if (x > 0 && y < 0) ret = 270.0f + ret;//   quadrant  4      
     return ret;
 }
 
@@ -130,5 +150,5 @@ int ValueConvertor::getAngle_INT(int arg_cartesianX, int arg_cartesianY){
    return vectorangle_NORTH(arg_cartesianX,arg_cartesianY);
    
    }
-float ValueConvertor::getAngle_FLOAT(int arg_cartesianX, int arg_cartesianY){return VECTORtoAUNGLE(arg_cartesianX,arg_cartesianY);}
+float ValueConvertor::getAngle_FLOAT(int arg_cartesianX, int arg_cartesianY){return VECTORtoAUNGLE_NORTH(arg_cartesianX,arg_cartesianY);}
 

@@ -3,12 +3,14 @@
 #include "DigitalInterface.h"
 #include "AnalogueInterface.h"
 #include "ValueConvertor.h"
+#include "JoyStickOBJ.h"
 
 AnalogueInterface analogueInterface;
 ValueConvertor valueConvertor;
 DigitalInterface digitalInterface; 
 CanSender canSender;
 CanSerialMsgParser canSerialMsgParser;
+JoyStickOBJ joystick;
 
 unsigned char DATA[8];
 long PGN_=0xFF02;
@@ -114,37 +116,16 @@ delay(100);
 
 void loop() {
   analogueInterface.run();
-  int deadzoneX=12;
-  int centerX=500;
-  int deadzoneY=12;
-  int centerY=500; 
-  int deadzoneX_Lower= centerX -deadzoneX;
-  int deadzoneX_Upper= centerX +deadzoneX;
-  int deadzoneY_Lower= centerY -deadzoneY;
-  int deadzoneY_Upper= centerY +deadzoneY;
-
-
   int JoyX = analogueInterface.getJoystickX();  // 0    508 ish +/- 5    1020
- 
   int JoyY = analogueInterface.getJoystickY();
 
- int filtered_X= JoyX;
- if (filtered_X> deadzoneX_Lower && filtered_X < deadzoneX_Upper) filtered_X=centerX;
- int filtered_Y= JoyY;
- if (filtered_Y> deadzoneY_Lower && filtered_Y < deadzoneY_Upper) filtered_Y=centerY;
-
- if(filtered_X>1000)filtered_X=1000;
- if(filtered_Y>1000)filtered_Y=1000;
-
- int cartesianX=filtered_X-centerX;
- 
- int cartesianY=filtered_Y-centerY;
-
+  joystick.updateValues(JoyX, JoyY);
+  float angle = joystick.getAngle();
 
 
   //Serial.print(cartesianX);
   Serial.print(" ");
-  Serial.print(valueConvertor.getAngle_INT(cartesianX,cartesianY));
+  Serial.print(angle);
   Serial.print(" ");
   Serial.println("");
 
