@@ -4,6 +4,7 @@
 #include "AnalogueInterface.h"
 #include "ValueConvertor.h"
 #include "JoyStickOBJ.h"
+#include "PGN_FF02_OBJ.h"
 
 AnalogueInterface analogueInterface;
 ValueConvertor valueConvertor;
@@ -11,6 +12,7 @@ DigitalInterface digitalInterface;
 CanSender canSender;
 CanSerialMsgParser canSerialMsgParser;
 JoyStickOBJ joystick;
+PGN_FF02_OBJ pgnFF02(0xFF02, 6, 8, 0x09, 0x30);
 
 unsigned char DATA[8];
 long PGN_=0xFF02;
@@ -107,7 +109,7 @@ DATA[7]=valueConvertor.getFirstByte();
 DATA[6]=valueConvertor.getSecondByte();
 DATA[5]=valueConvertor.getFirstByte();
 DATA[4]=valueConvertor.getSecondByte();
-j1939Transmit(PGN_, 0x06, 0x09, 0x30, DATA, 8);
+j1939Transmit(PGN_, 0x06, 0x09, 0x09, DATA, 8);
 
 delay(100);
  
@@ -115,25 +117,58 @@ delay(100);
 
 
 void loop() {
+
+digitalInterface.run();
+if (digitalInterface.getRED_LEDState()== HIGH)
+return;
+
   analogueInterface.run();
   int JoyX = analogueInterface.getJoystickX();  // 0    508 ish +/- 5    1020
   int JoyY = analogueInterface.getJoystickY();
 
   joystick.updateValues(JoyX, JoyY);
   float angle = joystick.getAngle();
+   float magnitude=  joystick.getMagnitude();
 
-byte* bytes = valueConvertor.floatToTwoByteArray(359.98f); // 35998 is 8C9E
+byte* bytes = valueConvertor.floatToTwoByteArray(angle); // 35998 is 8C9E
 byte high = bytes[0];
 byte low = bytes[1];
+
+ int sliderL = analogueInterface.getSliderL();
+  float floatValueMAPPED_sliderL =valueConvertor.mapFloat(sliderL,0,1023,0.0,19.6);
+  valueConvertor.convertToBytes(floatValueMAPPED_sliderL);
+
+pgnFF02.setByteArrayData(4,valueConvertor.getSecondByte());
+pgnFF02.setByteArrayData(5,valueConvertor.getFirstByte());
+
+   int sliderR = analogueInterface.getSliderR();
+  float floatValueMAPPED_sliderR =valueConvertor.mapFloat(sliderR,0,1023,0.0,19.6);
+  valueConvertor.convertToBytes(floatValueMAPPED_sliderR);
+
+pgnFF02.setByteArrayData(6,valueConvertor.getSecondByte());
+pgnFF02.setByteArrayData(7,valueConvertor.getFirstByte());
+
+
+
+
+pgnFF02.setByteArrayData(2,low);
+pgnFF02.setByteArrayData(3,high);
+ // byte* byteArray = pgnFF02.getByteArrayData();
+
+j1939Transmit(pgnFF02.getPgn(), pgnFF02.getPriority(), pgnFF02.getSourceAddress(),  pgnFF02.getSourceAddress(), pgnFF02.getByteArrayData(), 8);
+ delay(150);
+ return;
+
   //Serial.print(cartesianX);
   Serial.print(" ");
-  Serial.print(low,HEX); //9E  for the input   35998 is 8C9E
+  Serial.print(JoyX); //9E  for the input   35998 is 8C9E
   Serial.print(" ");
-  Serial.print(high,HEX); //8C   for the input   35998 is 8C9E
+  Serial.print(JoyY); //8C   for the input   35998 is 8C9E
   Serial.print(" ");
+  Serial.print(magnitude);
   Serial.println("");
 
  
-delay(100);
+
  
 }
