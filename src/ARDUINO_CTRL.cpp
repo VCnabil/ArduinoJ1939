@@ -75,20 +75,36 @@ if(argMod==1){
     Serial.print("|");
     Serial.print(pgnFF02.getSourceAddress(),HEX); 
     Serial.print("|");
+    byte value= pgnFF02.getByteArrayData()[0];
+    if (value < 0x10) {Serial.print("0");}
     Serial.print(pgnFF02.getByteArrayData()[0],HEX);
     Serial.print("|");
+     value= pgnFF02.getByteArrayData()[1];
+    if (value < 0x10) {Serial.print("0");}
     Serial.print(pgnFF02.getByteArrayData()[1],HEX);
     Serial.print("|");
+     value= pgnFF02.getByteArrayData()[2];
+    if (value < 0x10) {Serial.print("0");}
     Serial.print(pgnFF02.getByteArrayData()[2],HEX);
     Serial.print("|");
+     value= pgnFF02.getByteArrayData()[3];
+    if (value < 0x10) {Serial.print("0");}
     Serial.print(pgnFF02.getByteArrayData()[3],HEX);
     Serial.print("|");
+     value= pgnFF02.getByteArrayData()[4];
+    if (value < 0x10) {Serial.print("0");}
     Serial.print(pgnFF02.getByteArrayData()[4],HEX);
     Serial.print("|");
+     value= pgnFF02.getByteArrayData()[5];
+    if (value < 0x10) {Serial.print("0");}
     Serial.print(pgnFF02.getByteArrayData()[5],HEX);
     Serial.print("|");
+     value= pgnFF02.getByteArrayData()[6];
+    if (value < 0x10) {Serial.print("0");}
     Serial.print(pgnFF02.getByteArrayData()[6],HEX);
     Serial.print("|");
+     value= pgnFF02.getByteArrayData()[7];
+    if (value < 0x10) {Serial.print("0");}
     Serial.print(pgnFF02.getByteArrayData()[7],HEX);
     Serial.print("|");
     Serial.println("uhex");
