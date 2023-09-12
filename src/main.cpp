@@ -1,3 +1,20 @@
+#include "ARDUINO_CTRL.h"
+
+ARDUINO_CTRL arduinoCtrl;
+
+void setup() {
+  Serial.begin(115200);
+  arduinoCtrl.setup();
+}
+
+void loop() {
+  arduinoCtrl.RunLoop_ArduinoController();
+  delay(150);
+}
+
+
+
+/*
 #include "CanSender.h"
 #include "canSerialMsgParser.h"
 #include "DigitalInterface.h"
@@ -172,3 +189,5 @@ j1939Transmit(pgnFF02.getPgn(), pgnFF02.getPriority(), pgnFF02.getSourceAddress(
 
  
 }
+
+*/

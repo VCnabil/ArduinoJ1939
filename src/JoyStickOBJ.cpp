@@ -25,16 +25,19 @@ float  calculateMagnitudePercentage(int x, int y){
     float percentage = (magnitude / 512.0f) * 100.0f;
     if(percentage<0.0f)percentage=0.0f;
     if(percentage>100.0f)percentage=100.0f;
-    Serial.print("x= ");
-    Serial.print(x );
-    Serial.print(" y= ");
-    Serial.print(y);
-    Serial.print(" m= ");
-    Serial.print(magnitude);
-    Serial.print(" %= ");
-    Serial.print(percentage);
 
-    Serial.println(" ");
+// don't serial print anywhere else but from serialmanager
+    // Serial.print("x= ");
+    // Serial.print(x );
+    // Serial.print(" y= ");
+    // Serial.print(y);
+    // Serial.print(" m= ");
+    // Serial.print(magnitude);
+    // Serial.print(" %= ");
+    // Serial.print(percentage);
+
+    // Serial.println(" ");
+
     // Ensure that the magnitude is not zero before calculating the percentage
  
 
