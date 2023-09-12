@@ -1,14 +1,17 @@
 #include "ARDUINO_CTRL.h"
-
+#include "DigitalInterface.h"
 ARDUINO_CTRL arduinoCtrl;
-
+DigitalInterface digiface;
 void setup() {
   Serial.begin(115200);
+  digiface.setup();
   arduinoCtrl.setup();
 }
 
 void loop() {
-  arduinoCtrl.RunLoop_ArduinoController();
+  digiface.run();
+  if(digiface.getRED_LEDState()==HIGH)return; 
+  arduinoCtrl.RunLoop_ArduinoController(digiface.getDipNumeric());
   delay(150);
 }
 

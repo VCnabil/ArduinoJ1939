@@ -12,6 +12,7 @@ public:
   int getRED_LEDState();
   int getGreen_LEDState();
   int getDIPState(int index); // Method to query DIP switch state
+  int getDipNumeric();
 private:
   const int BUTTON_R_PIN = 35;
   const int LED_red_PIN = 37;

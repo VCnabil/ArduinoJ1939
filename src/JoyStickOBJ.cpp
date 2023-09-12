@@ -19,10 +19,10 @@ float  calculateMagnitudePercentage(int x, int y){
     float yfloat= static_cast<float>(y);
     float xyxy= (xfloat * xfloat) + (yfloat * yfloat);
     float magnitude = sqrtf(xyxy);
-    if (magnitude>512.0f)magnitude=512.0f;
+    if (magnitude>502.0f) magnitude=502.0f;
    if (magnitude <= 0.0f) magnitude=0.0f; 
        // Calculate the percentage as a fraction of 500
-    float percentage = (magnitude / 512.0f) * 100.0f;
+    float percentage = (magnitude / 502.0f) * 100.0f;
     if(percentage<0.0f)percentage=0.0f;
     if(percentage>100.0f)percentage=100.0f;
 

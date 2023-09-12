@@ -11,7 +11,7 @@ class ARDUINO_CTRL {
 public:
   ARDUINO_CTRL();
   void setup();
-  void RunLoop_ArduinoController();
+  void RunLoop_ArduinoController(int argMod);
 private:
   AnalogueInterface analogueInterface;
   ValueConvertor valueConvertor;

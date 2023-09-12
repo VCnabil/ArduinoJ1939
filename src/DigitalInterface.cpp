@@ -88,3 +88,24 @@ int DigitalInterface::getDIPState(int index) {
   }
   return -1; // Invalid index
 }
+
+int DigitalInterface::getDipNumeric()
+{
+  if(DIP_Pin_states[5]==LOW && DIP_Pin_states[4]==LOW && DIP_Pin_states[3]==LOW && DIP_Pin_states[2]==LOW && DIP_Pin_states[1]==LOW && DIP_Pin_states[0]==LOW  )return 0;
+  else
+  if(DIP_Pin_states[5]==HIGH && DIP_Pin_states[4]==LOW && DIP_Pin_states[3]==LOW && DIP_Pin_states[2]==LOW && DIP_Pin_states[1]==LOW && DIP_Pin_states[0]==LOW  )return 1;
+  else
+  if(DIP_Pin_states[5]==LOW && DIP_Pin_states[4]==HIGH && DIP_Pin_states[3]==LOW && DIP_Pin_states[2]==LOW && DIP_Pin_states[1]==LOW && DIP_Pin_states[0]==LOW  )return 2;
+  else
+  if(DIP_Pin_states[5]==HIGH && DIP_Pin_states[4]==HIGH && DIP_Pin_states[3]==LOW && DIP_Pin_states[2]==LOW && DIP_Pin_states[1]==LOW && DIP_Pin_states[0]==LOW  )return 3;
+    else
+  if(DIP_Pin_states[5]==LOW && DIP_Pin_states[4]==LOW && DIP_Pin_states[3]==HIGH && DIP_Pin_states[2]==LOW && DIP_Pin_states[1]==LOW && DIP_Pin_states[0]==LOW  )return 4;
+    else
+  if(DIP_Pin_states[5]==HIGH && DIP_Pin_states[4]==LOW && DIP_Pin_states[3]==HIGH && DIP_Pin_states[2]==LOW && DIP_Pin_states[1]==LOW && DIP_Pin_states[0]==LOW  )return 5;
+    else
+  if(DIP_Pin_states[5]==LOW && DIP_Pin_states[4]==HIGH && DIP_Pin_states[3]==HIGH && DIP_Pin_states[2]==LOW && DIP_Pin_states[1]==LOW && DIP_Pin_states[0]==LOW  )return 6;
+    else
+  if(DIP_Pin_states[5]==HIGH && DIP_Pin_states[4]==HIGH && DIP_Pin_states[3]==HIGH && DIP_Pin_states[2]==LOW && DIP_Pin_states[1]==LOW && DIP_Pin_states[0]==LOW  )return 7;
+  else
+  return 8;
+}
