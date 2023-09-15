@@ -11,7 +11,7 @@ void setup() {
 void loop() {
   digiface.run();
   if(digiface.getRED_LEDState()==HIGH)return; 
-  arduinoCtrl.RunLoop_ArduinoController(digiface.getDipNumeric());
+  arduinoCtrl.RunLoop_ArduinoController(digiface.getDipNumeric(), digiface.getDIPState(0));
   delay(150);
 }
 

@@ -19,7 +19,7 @@ void ARDUINO_CTRL::setup() {
 //                  sliderL
 //                           6  7
 //                           sliderT
-void ARDUINO_CTRL::RunLoop_ArduinoController(int argMod) {
+void ARDUINO_CTRL::RunLoop_ArduinoController(int argMod, int argUSePotIfDip0IsOn) {
     analogueInterface.run();
 
     int JoyX = analogueInterface.getJoystickX();  // 0    508 ish +/- 5    1020
@@ -47,7 +47,14 @@ void ARDUINO_CTRL::RunLoop_ArduinoController(int argMod) {
     pgnFF02.setByteArrayData(2,low_ang);
     pgnFF02.setByteArrayData(3,high_ang);
 
-    int sliderL = analogueInterface.getSliderL();
+    int sliderL =0;
+    if(argUSePotIfDip0IsOn==HIGH){
+      sliderL = analogueInterface.getPot1();
+    }
+    else
+    {
+      sliderL = analogueInterface.getSliderL();
+    }
     float floatValueMAPPED_sliderL =valueConvertor.mapFloat(sliderL,0,1023,0.0,19.6);
     valueConvertor.convertToBytes(floatValueMAPPED_sliderL);
 

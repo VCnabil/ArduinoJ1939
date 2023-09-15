@@ -12,11 +12,13 @@ class AnalogueInterface {
     int getJoystickY();
     int getSliderL();
     int getSliderR();
+    int getPot1();
       private:
     int joystickX;
     int joystickY;
     int sliderL;
     int sliderR;
+    int pot1;
 };
 
 #endif

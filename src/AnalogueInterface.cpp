@@ -10,6 +10,7 @@ void AnalogueInterface::begin() {
   pinMode(A1, INPUT);
   pinMode(A2, INPUT);
   pinMode(A3, INPUT);
+  pinMode(A4, INPUT);
 }
 
 void AnalogueInterface::run() {
@@ -17,6 +18,7 @@ void AnalogueInterface::run() {
   joystickY = analogRead(A1);
   sliderL = 1023 - analogRead(A2);
   sliderR = 1023 - analogRead(A3);
+  pot1=analogRead(A4);
 }
 
 int AnalogueInterface::getJoystickX() {
@@ -33,4 +35,9 @@ int AnalogueInterface::getSliderL() {
 
 int AnalogueInterface::getSliderR() {
   return sliderR;
+}
+
+int AnalogueInterface::getPot1()
+{
+  return pot1;
 }
