@@ -7,12 +7,47 @@ void setup() {
   digiface.setup();
   arduinoCtrl.setup();
 }
-
+int cnt_info=0;
 void loop() {
   digiface.run();
   if(digiface.getRED_LEDState()==HIGH)return; 
-  arduinoCtrl.RunLoop_ArduinoController(digiface.getDipNumeric(), digiface.getDIPState(0));
-  delay(150);
+ // arduinoCtrl.RunLoop_ArduinoController(digiface.getDipNumeric(), digiface.getDIPState(0));
+ byte arrd=0x00;
+int pgntoggle=0;
+
+ if( digiface.getDIPState(5)==LOW &&  digiface.getDIPState(4)==LOW ){
+    arrd=0x00;
+ }
+ else
+  if( digiface.getDIPState(5)==HIGH &&  digiface.getDIPState(4)==LOW ){
+arrd=0x01;
+ }
+ else
+  if( digiface.getDIPState(5)==HIGH &&  digiface.getDIPState(4)==HIGH ){
+arrd=0x11;
+ }
+ else
+  if( digiface.getDIPState(5)==LOW &&  digiface.getDIPState(4)==HIGH ){
+arrd=0x10;
+ }
+ 
+  if( digiface.getDIPState(0)==LOW){pgntoggle=0;}
+  else 
+  if( digiface.getDIPState(0)==HIGH){pgntoggle=1;}
+
+arduinoCtrl.RunLoop_Sim_Feedbacks(arrd);
+   
+
+  if(digiface.getGreen_LEDState()==HIGH)
+  delay(100);
+  else
+  delay(200);
+  // cnt_info++;
+
+  // if(cnt_info%4 ==0 ){
+  //   arduinoCtrl.RunLoop_SystemInfo();
+
+  // }
 }
 
 

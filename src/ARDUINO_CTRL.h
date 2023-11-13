@@ -12,6 +12,8 @@ public:
   ARDUINO_CTRL();
   void setup();
   void RunLoop_ArduinoController(int argMod,int argUSePotIfDip0IsOn);
+  void RunLoop_SystemInfo();
+  void RunLoop_Sim_Feedbacks(byte argAddress00011110);
 private:
   AnalogueInterface analogueInterface;
   ValueConvertor valueConvertor;

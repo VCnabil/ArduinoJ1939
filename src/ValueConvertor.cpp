@@ -163,6 +163,18 @@ byte* ValueConvertor::floatToTwoByteArray(float value) {
   return result;
 }
 
+byte* ValueConvertor::floatToTwoByteArraySmaller(float value) {
+  static byte result[2];  // Static so it persists outside the function
+  uint16_t intVal = (uint16_t)(value * 1);  // Convert float to integer
+
+  result[0] = (intVal >> 8) & 0xFF;  // High byte
+  result[1] = intVal & 0xFF;         // Low byte
+
+  return result;
+}
+
+
+
 
 
 /*

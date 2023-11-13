@@ -14,6 +14,7 @@ class ValueConvertor {
     int getAngle_INT(int arg_cartesianX, int arg_cartesianY);
     float getAngle_FLOAT(int arg_cartesianX, int arg_cartesianY);
     byte* floatToTwoByteArray(float value);
+    byte* floatToTwoByteArraySmaller(float value);
     
 
 

@@ -1,9 +1,12 @@
 #include "ARDUINO_CTRL.h"
 
-ARDUINO_CTRL::ARDUINO_CTRL() : pgnFF02(0xFF02, 6, 8, 0x09, 0x30) {
-  // Constructor body
-}
+ ARDUINO_CTRL::ARDUINO_CTRL() : pgnFF02(0xFF8E, 6, 8, 0x00, 0x00) {
+//   // Constructor body
+ }
 
+// ARDUINO_CTRL::ARDUINO_CTRL() : pgnFF02(0xFEFC, 6, 8, 0x00, 0x00) {
+//   // Constructor body
+// }
 void ARDUINO_CTRL::setup() {
   analogueInterface.begin();
   canSender.setup();
@@ -29,14 +32,29 @@ void ARDUINO_CTRL::RunLoop_ArduinoController(int argMod, int argUSePotIfDip0IsOn
     float angle = joystick.getAngle();
     float magnitude=  joystick.getMagnitude();
 
+    int hackery1= JoyX;
+    int hackery2= JoyY;
+    if(hackery1>1000)hackery1=1000;
+    if(hackery2>1000)hackery1=1000;
+    angle=(float)hackery1;
+    magnitude=(float) hackery2;
 
-    byte* bytes_angle = valueConvertor.floatToTwoByteArray(angle); // 35998 is 8C9E
+    // byte* bytes_angle = valueConvertor.floatToTwoByteArray(angle); // 35998 is 8C9E
+    // byte high_ang = bytes_angle[0];
+    // byte low_ang = bytes_angle[1];
+
+    // byte* bytes_mag = valueConvertor.floatToTwoByteArray(magnitude); // should be 100 max
+    // byte high_mag = bytes_mag[0];
+    // byte low_mag = bytes_mag[1];
+
+    
+    byte* bytes_angle = valueConvertor.floatToTwoByteArraySmaller(angle); // 35998 is 8C9E
     byte high_ang = bytes_angle[0];
-    byte low_ang = bytes_angle[1];
+     byte low_ang = bytes_angle[1];
 
-    byte* bytes_mag = valueConvertor.floatToTwoByteArray(magnitude); // should be 100 max
-    byte high_mag = bytes_mag[0];
-    byte low_mag = bytes_mag[1];
+     byte* bytes_mag = valueConvertor.floatToTwoByteArraySmaller(magnitude); // should be 100 max
+     byte high_mag = bytes_mag[0];
+     byte low_mag = bytes_mag[1];
 
 
 
@@ -179,4 +197,68 @@ if(argMod==3){
 
   //j1939Transmit(pgnFF02.getPgn(), pgnFF02.getPriority(), pgnFF02.getSourceAddress(),  pgnFF02.getSourceAddress(), pgnFF02.getByteArrayData(), 8);
   //delay(150);
+}
+
+void ARDUINO_CTRL::RunLoop_SystemInfo()
+{
+
+    byte _byteArray_SysFaults[8] = {0,0,0,0,0,0,0,0};
+    canSender.sendMessage(0x18,0x18FF8D,0x00, _byteArray_SysFaults );
+
+
+  byte _arra_FF8C_Sysinfo[8] = {0,7,0,0,0,4,2,0};
+  canSender.sendMessage(0x18,0x18FF8C,0x00, _arra_FF8C_Sysinfo );
+
+
+
+
+
+    byte _byteArray_Info_Active[8] = {0,13,0,0,0,0,0,0};
+ // canSender.sendMessage(0x18,0x18FF11,0x00, _byteArray_Info_Active );
+
+      byte _byteArray_InfoChangover[8] = {0,0,0,0,0,0,0,0};
+ // canSender.sendMessage(0x18,0x18FF21,0x00, _byteArray_InfoChangover );
+
+}
+
+void ARDUINO_CTRL::RunLoop_Sim_Feedbacks(byte argAddress00011110)
+{
+
+    analogueInterface.run();
+
+    int JoyX = analogueInterface.getJoystickX();  // 0    508 ish +/- 5    1020
+    int JoyY = analogueInterface.getPot1();
+
+    if(JoyX>1000)JoyX=1000;
+    if(JoyY>1000)JoyY=1000;
+    
+    float joyxF= ((float)JoyX / 1000.0f)*250;
+    float joyyF= ((float)JoyY / 1000.0f)*250;
+
+  int joyxInt= (int)joyxF;
+  int joyyInt= (int)joyyF;
+    
+ int slider_L =analogueInterface.getSliderL();
+ int slider_R =analogueInterface.getSliderR();
+    if(slider_L>1023)JoyX=1023;
+    if(slider_R>1023)JoyY=1023;
+
+    float SliderLF= ((float)slider_L / 1023.0f)*250;
+    float SliderRF= ((float)slider_R / 1023.0f)*250;
+
+  int SliderLInt= (int)SliderLF;
+  int SliderRInt= (int)SliderRF;
+
+    pgnFF02.setByteArrayData(0,SliderLInt);
+    pgnFF02.setByteArrayData(2,joyxInt);
+
+    pgnFF02.setByteArrayData(3,joyyInt);
+    pgnFF02.setByteArrayData(5,SliderRInt);
+
+  
+    byte ardd= 0x00;
+    long pgncom=0xFEFC;
+    
+    canSender.sendMessage(pgnFF02.getPriority(),pgncom,argAddress00011110, pgnFF02.getByteArrayData() );
+
 }
